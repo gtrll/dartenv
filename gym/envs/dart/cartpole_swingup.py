@@ -8,7 +8,7 @@ class DartCartPoleSwingUpEnv(dart_env.DartEnv, utils.EzPickle):
     def __init__(self):
         self.control_bounds = np.array([[1.0],[-1.0]])
         self.action_scale = 40
-        dart_env.DartEnv.__init__(self, 'cartpole_swingup.skel', 2, 4, self.control_bounds, dt=0.01)
+        dart_env.DartEnv.__init__(self, 'cartpole_swingup.skel', 2, 4, self.control_bounds, dt=0.01, disableViewer=True)
         utils.EzPickle.__init__(self)
 
     def _step(self, a):

@@ -9,7 +9,7 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
         self.action_scale = 200
         obs_dim = 11
 
-        dart_env.DartEnv.__init__(self, 'hopper_capsule.skel', 4, obs_dim, self.control_bounds, disableViewer=False)
+        dart_env.DartEnv.__init__(self, 'hopper_capsule.skel', 4, obs_dim, self.control_bounds, disableViewer=True)
 
         utils.EzPickle.__init__(self)
 
