@@ -287,6 +287,13 @@ register(
     max_episode_steps=1000,
 )
 
+register(
+    id='DartHopperWithModel-v1',
+    entry_point='gym.envs.dart:DartHopperWithModelEnv',
+    reward_threshold=3800.0,
+    max_episode_steps=1000,
+)
+
 
 # Mujoco
 # ----------------------------------------

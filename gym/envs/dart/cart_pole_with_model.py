@@ -26,8 +26,9 @@ class DartCartPoleWithModelEnv(dart_env.DartEnv, utils.EzPickle):
         # Using a!!!!!
         ob_next = self._dynamics(np.hstack([ob[None], a[0][None][None]]))[0]
         q_dim = int(len(ob_next)/2)
-        self.robot_skeleton.q = ob_next[:q_dim]
-        self.robot_skeleton.dq = ob_next[q_dim:]
+        # self.robot_skeleton.q = ob_next[:q_dim]
+        # self.robot_skeleton.dq = ob_next[q_dim:]
+        self.set_state(ob_next[:q_dim], ob_next[q_dim:])
         ob = ob_next
 
         notdone = np.isfinite(ob).all() and (np.abs(ob[1]) <= .2)

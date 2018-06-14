@@ -3,16 +3,18 @@ from gym import utils
 from gym.envs.dart import dart_env
 
 
-class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
+class DartHopperWithModelEnv(dart_env.DartEnv, utils.EzPickle):
     def __init__(self):
         self.control_bounds = np.array([[1.0, 1.0, 1.0], [-1.0, -1.0, -1.0]])
         self.action_scale = 200
-        # obs_dim = 11
         obs_dim = 13
 
         dart_env.DartEnv.__init__(self, 'hopper_capsule.skel', 4, obs_dim, self.control_bounds, disableViewer=True)
 
         utils.EzPickle.__init__(self)
+
+    def set_dynamics(self, dynamics):
+        self._dynamics = dynamics
 
     def advance(self, a):
         clamped_control = np.array(a)
@@ -27,9 +29,13 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
         self.do_simulation(tau, self.frame_skip)
 
     def _step(self, a):
-
         posbefore = self.robot_skeleton.q[0]
-        self.advance(a)
+
+        ob = self._get_obs()
+        ob_next = self._dynamics(np.hstack([ob[None], a[None]]))[0]
+        # self.advance(a)
+        q_dim = self.robot_skeleton.ndofs
+        self.set_state(ob_next[:q_dim], ob_next[q_dim:2*q_dim])
         posafter, ang = self.robot_skeleton.q[0, 2]
         height = self.robot_skeleton.bodynodes[2].com()[1]
 
@@ -57,12 +63,6 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
             self.robot_skeleton.q,
             np.clip(self.robot_skeleton.dq, -10, 10),
             [self.robot_skeleton.bodynodes[2].com()[1]]])
-        # state = np.concatenate([
-        #     self.robot_skeleton.q[1:],
-        #     np.clip(self.robot_skeleton.dq, -10, 10)
-        # ])
-        # state[0] = self.robot_skeleton.bodynodes[2].com()[1]
-
         return state
 
     def reset_model(self):

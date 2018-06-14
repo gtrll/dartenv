@@ -18,3 +18,4 @@ from gym.envs.dart.human_walker import DartHumanWalkerEnv
 
 # With Model
 from gym.envs.dart.cart_pole_with_model import DartCartPoleWithModelEnv
+from gym.envs.dart.hopper_with_model import DartHopperWithModelEnv
