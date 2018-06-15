@@ -31,6 +31,8 @@ class DartHopperWithModelEnv(dart_env.DartEnv, utils.EzPickle):
     def _step(self, a):
         posbefore = self.robot_skeleton.q[0]
 
+        # !!!! CLAMP control
+        a = np.clip(a, -1, 1)
         ob = self._get_obs()
         ob_next = self._dynamics(np.hstack([ob[None], a[None]]))[0]
         # self.advance(a)
