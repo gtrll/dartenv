@@ -32,7 +32,7 @@ class DartHopperWithModelEnv(dart_env.DartEnv, utils.EzPickle):
         posbefore = self.robot_skeleton.q[0]
 
         ob = self._get_obs()
-        ob_next = self._dynamics(np.hstack([ob[None], a[None]]))[0]
+        ob_next = self._dynamics(np.hstack([ob, a])[None])[0]
         # self.advance(a)
         q_dim = self.robot_skeleton.ndofs
         self.set_state(ob_next[:q_dim], ob_next[q_dim:2*q_dim])
@@ -41,6 +41,9 @@ class DartHopperWithModelEnv(dart_env.DartEnv, utils.EzPickle):
 
         joint_limit_penalty = 0
         for j in [-2]:
+            print(self.robot_skeleton.q_lower)
+            print(self.robot_skeleton.q_upper)
+            exit(0)
             if (self.robot_skeleton.q_lower[j] - self.robot_skeleton.q[j]) > -0.05:
                 joint_limit_penalty += abs(1.5)
             if (self.robot_skeleton.q_upper[j] - self.robot_skeleton.q[j]) < 0.05:
@@ -61,7 +64,8 @@ class DartHopperWithModelEnv(dart_env.DartEnv, utils.EzPickle):
     def _get_obs(self):
         state = np.concatenate([
             self.robot_skeleton.q,
-            np.clip(self.robot_skeleton.dq, -10, 10),
+            # np.clip(self.robot_skeleton.dq, -10, 10),
+            self.robot_skeleton.dq,
             [self.robot_skeleton.bodynodes[2].com()[1]]])
         return state
 

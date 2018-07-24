@@ -41,6 +41,7 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
                 joint_limit_penalty += abs(1.5)
 
         alive_bonus = 1.0
+
         reward = (posafter - posbefore) / self.dt
         reward += alive_bonus
         reward -= 1e-3 * np.square(a).sum()
@@ -55,8 +56,10 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
     def _get_obs(self):
         state = np.concatenate([
             self.robot_skeleton.q,
-            np.clip(self.robot_skeleton.dq, -10, 10),
+            # np.clip(self.robot_skeleton.dq, -10, 10),
+            self.robot_skeleton.dq,
             [self.robot_skeleton.bodynodes[2].com()[1]]])
+
         # state = np.concatenate([
         #     self.robot_skeleton.q[1:],
         #     np.clip(self.robot_skeleton.dq, -10, 10)

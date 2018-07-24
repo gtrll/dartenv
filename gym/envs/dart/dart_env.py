@@ -24,8 +24,8 @@ class DartEnv(gym.Env):
     """Superclass for all Dart environments.
     """
 
-    def __init__(self, model_paths, frame_skip, observation_size, action_bounds, \
-                 dt=0.002, obs_type="parameter", action_type="continuous", visualize=True, disableViewer=False,\
+    def __init__(self, model_paths, frame_skip, observation_size, action_bounds,
+                 dt=0.002, obs_type="parameter", action_type="continuous", visualize=True, disableViewer=False,
                  screen_width=80, screen_height=45):
         assert obs_type in ('parameter', 'image')
         assert action_type in ("continuous", "discrete")
@@ -47,7 +47,7 @@ class DartEnv(gym.Env):
             else:
                 fullpath = os.path.join(os.path.dirname(__file__), "assets", model_path)
             if not path.exists(fullpath):
-                raise IOError("File %s does not exist"%fullpath)
+                raise IOError("File %s does not exist" % fullpath)
             full_paths.append(fullpath)
 
         if full_paths[0][-5:] == '.skel':
@@ -57,8 +57,7 @@ class DartEnv(gym.Env):
             for fullpath in full_paths:
                 self.dart_world.add_skeleton(fullpath)
 
-
-        self.robot_skeleton = self.dart_world.skeletons[-1] # assume that the skeleton of interest is always the last one
+        self.robot_skeleton = self.dart_world.skeletons[-1]  # assume that the skeleton of interest is always the last one
 
         for jt in range(0, len(self.robot_skeleton.joints)):
             for dof in range(len(self.robot_skeleton.joints[jt].dofs)):
@@ -66,13 +65,13 @@ class DartEnv(gym.Env):
                     self.robot_skeleton.joints[jt].set_position_limit_enforced(True)
 
         self._obs_type = obs_type
-        self.frame_skip= frame_skip
-        self.visualize = visualize  #Show the window or not
+        self.frame_skip = frame_skip
+        self.visualize = visualize  # Show the window or not
         self.disableViewer = disableViewer
 
         # random perturbation
         self.add_perturbation = False
-        self.perturbation_parameters = [0.05, 5, 2] # probability, magnitude, bodyid, duration
+        self.perturbation_parameters = [0.05, 5, 2]  # probability, magnitude, bodyid, duration
         self.perturbation_duration = 40
         self.perturb_force = np.array([0, 0, 0])
 
@@ -84,7 +83,7 @@ class DartEnv(gym.Env):
         if action_type == "continuous":
             self.action_space = spaces.Box(action_bounds[1], action_bounds[0])
 
-        self.track_skeleton_id = -1 # track the last skeleton's com by default
+        self.track_skeleton_id = -1  # track the last skeleton's com by default
 
         # initialize the viewer, get the window size
         # initial here instead of in _render
@@ -109,9 +108,8 @@ class DartEnv(gym.Env):
 
         self.metadata = {
             'render.modes': ['human', 'rgb_array'],
-            'video.frames_per_second' : int(np.round(1.0 / self.dt))
+            'video.frames_per_second': int(np.round(1.0 / self.dt))
         }
-
 
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -191,7 +189,7 @@ class DartEnv(gym.Env):
     def getViewer(self, sim, title=None):
         # glutInit(sys.argv)
         win = StaticGLUTWindow(sim, title)
-        win.scene.add_camera(Trackball(theta=-45.0, phi = 0.0, zoom=0.1), 'gym_camera')
+        win.scene.add_camera(Trackball(theta=-45.0, phi=0.0, zoom=0.1), 'gym_camera')
         win.scene.set_camera(win.scene.num_cameras()-1)
 
         # to add speed,
@@ -212,3 +210,6 @@ class DartEnv(gym.Env):
             self.robot_skeleton.q,
             self.robot_skeleton.dq
         ])
+
+    def get_state(self):
+        return self.state_vector()

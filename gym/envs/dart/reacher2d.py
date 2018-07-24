@@ -2,11 +2,13 @@ import numpy as np
 from gym import utils
 from gym.envs.dart import dart_env
 
+
 class DartReacher2dEnv(dart_env.DartEnv, utils.EzPickle):
     def __init__(self):
         self.target = np.array([0.1, 0.01, -0.1])
+        self.st_dim = 4
         self.action_scale = np.array([200, 200])
-        self.control_bounds = np.array([[1.0, 1.0],[-1.0, -1.0]])
+        self.control_bounds = np.array([[1.0, 1.0], [-1.0, -1.0]])
         dart_env.DartEnv.__init__(self, 'reacher2d.skel', 2, 11, self.control_bounds, dt=0.01, disableViewer=True)
         for s in self.dart_world.skeletons:
             s.set_self_collision_check(False)
@@ -29,7 +31,7 @@ class DartReacher2dEnv(dart_env.DartEnv, utils.EzPickle):
         vec = self.robot_skeleton.bodynodes[-1].com() - self.target
 
         reward_dist = - np.linalg.norm(vec)
-        reward_ctrl = - np.square(a).sum()#*0.1
+        reward_ctrl = - np.square(a).sum()  # *0.1
         reward = reward_dist + reward_ctrl
 
         s = self.state_vector()
@@ -45,20 +47,21 @@ class DartReacher2dEnv(dart_env.DartEnv, utils.EzPickle):
 
     def reset_model(self):
         self.dart_world.reset()
+
         qpos = self.robot_skeleton.q + self.np_random.uniform(low=-.01, high=.01, size=self.robot_skeleton.ndofs)
         qvel = self.robot_skeleton.dq + self.np_random.uniform(low=-.005, high=.005, size=self.robot_skeleton.ndofs)
+
         self.set_state(qpos, qvel)
         while True:
             self.target = self.np_random.uniform(low=-.2, high=.2, size=3)
             self.target[1] = 0.0
-            if np.linalg.norm(self.target) < .2: break
+            if np.linalg.norm(self.target) < .2:
+                break
         self.target[1] = 0.01
 
-        self.dart_world.skeletons[1].q=[0, 0, 0, self.target[0], self.target[1], self.target[2]]
-
+        self.dart_world.skeletons[1].q = [0, 0, 0, self.target[0], self.target[1], self.target[2]]
 
         return self._get_obs()
-
 
     def viewer_setup(self):
         self._get_viewer().scene.tb.trans[2] = -1.0

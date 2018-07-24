@@ -7,6 +7,7 @@ class DartCartPoleEnv(dart_env.DartEnv, utils.EzPickle):
     def __init__(self):
         control_bounds = np.array([[1.0], [-1.0]])
         self.action_scale = 100
+        self.st_dim = 4
         dart_env.DartEnv.__init__(self, 'cartpole.skel', 2, 4, control_bounds, dt=0.02, disableViewer=True)
         utils.EzPickle.__init__(self)
 
@@ -24,6 +25,9 @@ class DartCartPoleEnv(dart_env.DartEnv, utils.EzPickle):
         return ob, reward, done, {}
 
     def _get_obs(self):
+        return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
+
+    def get_state(self):
         return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
 
     def reset_model(self):
