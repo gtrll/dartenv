@@ -27,7 +27,8 @@ class DartCartPoleEnv(dart_env.DartEnv, utils.EzPickle):
     def _get_obs(self):
         return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
 
-    def get_state(self):
+    @property
+    def state(self):
         return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
 
     def reset_model(self):
