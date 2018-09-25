@@ -14,6 +14,10 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
 
         utils.EzPickle.__init__(self)
 
+    @property
+    def state(self):
+        return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
+    
     def advance(self, a):
         clamped_control = np.array(a)
         for i in range(len(clamped_control)):
