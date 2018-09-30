@@ -15,7 +15,5 @@ from gym.envs.dart.reacher2d import DartReacher2dEnv
 
 from gym.envs.dart.walker3d_spd import DartWalker3dSPDEnv
 from gym.envs.dart.human_walker import DartHumanWalkerEnv
+from gym.envs.dart.snake_7link import DartSnake7LinkEnv
 
-# With Model
-from gym.envs.dart.cart_pole_with_model import DartCartPoleWithModelEnv
-from gym.envs.dart.hopper_with_model import DartHopperWithModelEnv

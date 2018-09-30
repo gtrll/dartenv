@@ -27,6 +27,12 @@ class DartWalker3dSPDEnv(dart_env.DartEnv, utils.EzPickle):
 
         dart_env.DartEnv.__init__(self, 'walker3d_waist.skel', 4, obs_dim, self.control_bounds, disableViewer=True)
 
+        try:
+            self.dart_world.set_collision_detector(3)
+        except Exception as e:
+            print('Does not have ODE collision detector, reverted to bullet collision detector')
+            self.dart_world.set_collision_detector(2)
+
         self.robot_skeleton.set_self_collision_check(True)
 
         utils.EzPickle.__init__(self)
@@ -48,7 +54,7 @@ class DartWalker3dSPDEnv(dart_env.DartEnv, utils.EzPickle):
             tau = self._spd(target)
             self.do_simulation(tau, 1)
 
-    def _step(self, a):
+    def step(self, a):
         pre_state = [self.state_vector()]
 
         clamped_control = np.array(a)

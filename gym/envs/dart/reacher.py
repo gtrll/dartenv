@@ -17,7 +17,7 @@ class DartReacherEnv(dart_env.DartEnv, utils.EzPickle):
     def state(self):
         return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
 
-    def _step(self, a):
+    def step(self, a):
         clamped_control = np.array(a)
         for i in range(len(clamped_control)):
             if clamped_control[i] > self.control_bounds[0][i]:

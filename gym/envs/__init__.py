@@ -200,6 +200,8 @@ register(
 
 # Dart
 # ----------------------------------------
+
+
 register(
     id='DartHopper-v1',
     entry_point='gym.envs.dart:DartHopperEnv',
@@ -278,23 +280,11 @@ register(
     max_episode_steps=300,
 )
 
-
-# Dart with model
 register(
-    id='DartCartPoleWithModel-v1',
-    entry_point='gym.envs.dart:DartCartPoleWithModelEnv',
-    reward_threshold=950.0,
+    id='DartSnake7Link-v1',
+    entry_point='gym.envs.dart:DartSnake7LinkEnv',
     max_episode_steps=1000,
 )
-
-register(
-    id='DartHopperWithModel-v1',
-    entry_point='gym.envs.dart:DartHopperWithModelEnv',
-    reward_threshold=3800.0,
-    max_episode_steps=1000,
-)
-
-
 # Mujoco
 # ----------------------------------------
 
