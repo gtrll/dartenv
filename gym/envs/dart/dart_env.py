@@ -103,7 +103,7 @@ class DartEnv(gym.Env):
         else:
             raise error.Error('Unrecognized observation type: {}'.format(self._obs_type))
 
-        self._seed()
+        # self._seed()
 
         #self.viewer = None
 
@@ -112,7 +112,7 @@ class DartEnv(gym.Env):
             'video.frames_per_second': int(np.round(1.0 / self.dt))
         }
 
-    def _seed(self, seed=None):
+    def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
