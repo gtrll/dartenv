@@ -5,7 +5,7 @@ from gym.envs.dart import dart_env
 
 class DartSnake7LinkEnv(dart_env.DartEnv, utils.EzPickle):
     def __init__(self):
-        self.control_bounds = np.array([[1.0, 1.0, 1.0, 1.0, 1.0, 1.0],[-1.0, -1.0, -1.0, -1.0, -1.0, -1.0]])
+        self.control_bounds = np.array([[1.0, 1.0, 1.0, 1.0, 1.0, 1.0], [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0]])
         self.action_scale = 200
         self.include_action_in_obs = False
         self.randomize_dynamics = False
@@ -87,7 +87,7 @@ class DartSnake7LinkEnv(dart_env.DartEnv, utils.EzPickle):
         return ob, reward, done, {}
 
     def _get_obs(self):
-        state =  np.concatenate([
+        state = np.concatenate([
             self.robot_skeleton.q[1:],
             self.robot_skeleton.dq,
         ])
@@ -96,7 +96,6 @@ class DartSnake7LinkEnv(dart_env.DartEnv, utils.EzPickle):
             state = np.concatenate([state, self.prev_a])
 
         return state
-
 
     def reset_model(self):
         self.dart_world.reset()
@@ -126,4 +125,4 @@ class DartSnake7LinkEnv(dart_env.DartEnv, utils.EzPickle):
 
     @property
     def state(self):
-        return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()        
+        return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()

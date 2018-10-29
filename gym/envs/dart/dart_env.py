@@ -53,12 +53,15 @@ class DartEnv(gym.Env):
 
         if full_paths[0][-5:] == '.skel':
             self.dart_world = DartWorld(dt, full_paths[0])
+            full_paths.pop(0)
         else:
             self.dart_world = DartWorld(dt)
-            for fullpath in full_paths:
-                self.dart_world.add_skeleton(fullpath)
+        for fullpath in full_paths:
+            self.dart_world.add_skeleton(fullpath)
 
         self.robot_skeleton = self.dart_world.skeletons[-1]  # assume that the skeleton of interest is always the last one
+        # print(self.robot_skeleton.ndofs)
+        # exit(0)
 
         for jt in range(0, len(self.robot_skeleton.joints)):
             for dof in range(len(self.robot_skeleton.joints[jt].dofs)):
@@ -173,8 +176,9 @@ class DartEnv(gym.Env):
             self.dart_world.step()
 
     def render(self, mode='human', close=False):
-        if not self.disableViewer:
-            self._get_viewer().scene.tb.trans[0] = -self.dart_world.skeletons[self.track_skeleton_id].com()[0]*1
+        # Camera tracks the skeleton.
+        # if not self.disableViewer:
+        #     self._get_viewer().scene.tb.trans[0] = -self.dart_world.skeletons[self.track_skeleton_id].com()[0]*1
         if close:
             if self.viewer is not None:
                 self._get_viewer().close()

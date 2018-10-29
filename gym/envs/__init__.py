@@ -237,6 +237,14 @@ register(
     max_episode_steps=500,
 )
 
+
+register(
+    id='DartWAMReacher-v1',
+    entry_point='gym.envs.dart:DartWAMReacherEnv',
+    reward_threshold=-200,
+    max_episode_steps=500,
+)
+
 register(
     id='DartDog-v1',
     entry_point='gym.envs.dart:DartDogEnv',
