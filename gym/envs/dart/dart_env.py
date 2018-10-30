@@ -177,8 +177,8 @@ class DartEnv(gym.Env):
 
     def render(self, mode='human', close=False):
         # Camera tracks the skeleton.
-        # if not self.disableViewer:
-        #     self._get_viewer().scene.tb.trans[0] = -self.dart_world.skeletons[self.track_skeleton_id].com()[0]*1
+        if not self.disableViewer:
+            self._get_viewer().scene.tb.trans[0] = -self.dart_world.skeletons[self.track_skeleton_id].com()[0]*1
         if close:
             if self.viewer is not None:
                 self._get_viewer().close()
