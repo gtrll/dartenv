@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<robot name="wam" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <gazebo>
+    <static>true</static>
+  </gazebo>
+  <link name="world"/>  
+  <link name="target">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry> <box size="0.1 0.1 0.1" /></geometry>
+    </visual>
+  </link>
+  <joint name="target_joint" type="floating">
+    <origin rpy="0 0 0" xyz="0.4 0.4 0.4" />    
+    <parent link="world"/>
+    <child link="target"/>    
+  </joint>
+</robot>
+
+
