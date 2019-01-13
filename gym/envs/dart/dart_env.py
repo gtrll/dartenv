@@ -60,8 +60,6 @@ class DartEnv(gym.Env):
             self.dart_world.add_skeleton(fullpath)
 
         self.robot_skeleton = self.dart_world.skeletons[-1]  # assume that the skeleton of interest is always the last one
-        # print(self.robot_skeleton.ndofs)
-        # exit(0)
 
         for jt in range(0, len(self.robot_skeleton.joints)):
             for dof in range(len(self.robot_skeleton.joints[jt].dofs)):
@@ -79,7 +77,7 @@ class DartEnv(gym.Env):
         self.perturbation_duration = 40
         self.perturb_force = np.array([0, 0, 0])
 
-        #assert not done
+        # assert not done
         self.obs_dim = observation_size
         self.act_dim = len(action_bounds[0])
 
@@ -107,9 +105,6 @@ class DartEnv(gym.Env):
             raise error.Error('Unrecognized observation type: {}'.format(self._obs_type))
 
         # self._seed()
-
-        #self.viewer = None
-
         self.metadata = {
             'render.modes': ['human', 'rgb_array'],
             'video.frames_per_second': int(np.round(1.0 / self.dt))

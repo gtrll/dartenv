@@ -10,7 +10,7 @@ class DartReacherEnv(dart_env.DartEnv, utils.EzPickle):
         self.target = np.array([0.8, -0.6, 0.6])
         self.action_scale = np.array([10, 10, 10, 10, 10])
         self.control_bounds = np.array([[1.0, 1.0, 1.0, 1.0, 1.0], [-1.0, -1.0, -1.0, -1.0, -1.0]])
-        dart_env.DartEnv.__init__(self, 'reacher.skel', 4, 21, self.control_bounds, disableViewer=True)
+        dart_env.DartEnv.__init__(self, 'reacher.skel', 4, 21, self.control_bounds, disableViewer=False)
         utils.EzPickle.__init__(self)
 
     @property

@@ -10,7 +10,7 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
         obs_dim = 11
         # obs_dim = 13
 
-        dart_env.DartEnv.__init__(self, 'hopper_capsule.skel', 4, obs_dim, self.control_bounds, disableViewer=False)
+        dart_env.DartEnv.__init__(self, 'hopper_capsule.skel', 4, obs_dim, self.control_bounds, disableViewer=True)
 
         try:
             self.dart_world.set_collision_detector(3)
@@ -37,7 +37,6 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
         self.do_simulation(tau, self.frame_skip)
 
     def step(self, a):
-        pre_state = [self.state_vector()]
         posbefore = self.robot_skeleton.q[0]
         self.advance(a)
         posafter, ang = self.robot_skeleton.q[0, 2]
@@ -51,7 +50,6 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
                 joint_limit_penalty += abs(1.5)
 
         alive_bonus = 1.0
-
         reward = (posafter - posbefore) / self.dt
         reward += alive_bonus
         reward -= 1e-3 * np.square(a).sum()
@@ -64,18 +62,8 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
         return ob, reward, done, {}
 
     def _get_obs(self):
-        # state = np.concatenate([
-        #     self.robot_skeleton.q,
-        #     # np.clip(self.robot_skeleton.dq, -10, 10),
-        #     self.robot_skeleton.dq,
-        #     [self.robot_skeleton.bodynodes[2].com()[1]]])
-
-        state = np.concatenate([
-            self.robot_skeleton.q[1:],
-            np.clip(self.robot_skeleton.dq, -10, 10)
-        ])
+        state = np.concatenate([self.robot_skeleton.q[1:], np.clip(self.robot_skeleton.dq, -10, 10)])
         state[0] = self.robot_skeleton.bodynodes[2].com()[1]
-
         return state
 
     def reset_model(self):

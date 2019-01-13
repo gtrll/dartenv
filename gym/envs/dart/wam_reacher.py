@@ -16,7 +16,7 @@ class DartWAMReacherEnv(dart_env.DartEnv, utils.EzPickle):
         self.action_scale = np.array([1.8, 1.8, 1.8, 1.6, 0.6, 0.6, 0.174]) * 10.0
         self.control_bounds = np.vstack([np.ones(n_dof), -np.ones(n_dof)])
         super().__init__(['wam/reaching_target.skel', 'wam/wam.urdf'],
-                         frame_skip, obs_dim, self.control_bounds, disableViewer=True)
+                         frame_skip, obs_dim, self.control_bounds, disableViewer=False)
         # self.robot_skeleton.joints[0].set_actuator_type(pydart.joint.Joint.LOCKED)  # lock the base of wam
         utils.EzPickle.__init__(self)
 

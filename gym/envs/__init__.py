@@ -238,12 +238,21 @@ register(
 )
 
 
-register(
-    id='DartWAMReacher-v1',
-    entry_point='gym.envs.dart:DartWAMReacherEnv',
-    reward_threshold=-200,
-    max_episode_steps=500,
-)
+# register(
+#     id='DartWAMReacher-v1',
+#     entry_point='gym.envs.dart:DartWAMReacherEnv',
+#     reward_threshold=-200,
+#     max_episode_steps=500,
+# )
+
+
+# register(
+#     id='DartKrangBalancingEnv-v1',
+#     entry_point='gym.envs.dart:DartKrangBalancingEnv',
+#     reward_threshold=-200,
+#     max_episode_steps=1000,
+# )
+
 
 register(
     id='DartDog-v1',
