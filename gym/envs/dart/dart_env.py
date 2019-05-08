@@ -59,7 +59,8 @@ class DartEnv(gym.Env):
         for fullpath in full_paths:
             self.dart_world.add_skeleton(fullpath)
 
-        self.robot_skeleton = self.dart_world.skeletons[-1]  # assume that the skeleton of interest is always the last one
+        # assume that the skeleton of interest is always the last one
+        self.robot_skeleton = self.dart_world.skeletons[-1]
 
         for jt in range(0, len(self.robot_skeleton.joints)):
             for dof in range(len(self.robot_skeleton.joints[jt].dofs)):
@@ -146,6 +147,7 @@ class DartEnv(gym.Env):
     def set_state_vector(self, state):
         self.robot_skeleton.set_positions(state[0:int(len(state)/2)])
         self.robot_skeleton.set_velocities(state[int(len(state)/2):])
+        return state
 
     @property
     def dt(self):
@@ -211,5 +213,6 @@ class DartEnv(gym.Env):
             self.robot_skeleton.dq
         ])
 
-    def get_state(self):
+    @property
+    def state(self):
         return self.state_vector()

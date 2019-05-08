@@ -7,9 +7,9 @@ from gym.envs.dart import dart_env
 
 class DartWalker3dEnv(dart_env.DartEnv, utils.EzPickle):
     def __init__(self):
-        self.control_bounds = np.array([[1.0]*15,[-1.0]*15])
+        self.control_bounds = np.array([[1.0]*15, [-1.0]*15])
         self.action_scale = np.array([100.0]*15)
-        self.action_scale[[-1,-2,-7,-8]] = 20
+        self.action_scale[[-1, -2, -7, -8]] = 20
         self.action_scale[[0, 1, 2]] = 150
         obs_dim = 41
 
@@ -30,9 +30,6 @@ class DartWalker3dEnv(dart_env.DartEnv, utils.EzPickle):
 
         utils.EzPickle.__init__(self)
 
-    @property
-    def state(self):
-        return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()        
     def advance(self, a):
         clamped_control = np.array(a)
         for i in range(len(clamped_control)):
@@ -54,13 +51,15 @@ class DartWalker3dEnv(dart_env.DartEnv, utils.EzPickle):
         side_deviation = self.robot_skeleton.bodynodes[0].com()[2]
 
         upward = np.array([0, 1, 0])
-        upward_world = self.robot_skeleton.bodynodes[0].to_world(np.array([0, 1, 0])) - self.robot_skeleton.bodynodes[0].to_world(np.array([0, 0, 0]))
+        upward_world = self.robot_skeleton.bodynodes[0].to_world(
+            np.array([0, 1, 0])) - self.robot_skeleton.bodynodes[0].to_world(np.array([0, 0, 0]))
         upward_world /= np.linalg.norm(upward_world)
         ang_cos_uwd = np.dot(upward, upward_world)
         ang_cos_uwd = np.arccos(ang_cos_uwd)
 
         forward = np.array([1, 0, 0])
-        forward_world = self.robot_skeleton.bodynodes[0].to_world(np.array([1, 0, 0])) - self.robot_skeleton.bodynodes[0].to_world(np.array([0, 0, 0]))
+        forward_world = self.robot_skeleton.bodynodes[0].to_world(
+            np.array([1, 0, 0])) - self.robot_skeleton.bodynodes[0].to_world(np.array([0, 0, 0]))
         forward_world /= np.linalg.norm(forward_world)
         ang_cos_fwd = np.dot(forward, forward_world)
         ang_cos_fwd = np.arccos(ang_cos_fwd)
@@ -84,7 +83,6 @@ class DartWalker3dEnv(dart_env.DartEnv, utils.EzPickle):
         deviation_pen = 1e-3 * abs(side_deviation)
         reward = vel_rew + alive_bonus - action_pen - joint_pen - deviation_pen
 
-
         self.t += self.dt
 
         s = self.state_vector()
@@ -99,9 +97,9 @@ class DartWalker3dEnv(dart_env.DartEnv, utils.EzPickle):
         return ob, reward, done, {}
 
     def _get_obs(self):
-        state =  np.concatenate([
+        state = np.concatenate([
             self.robot_skeleton.q[1:],
-            np.clip(self.robot_skeleton.dq,-10,10),
+            np.clip(self.robot_skeleton.dq, -10, 10),
         ])
 
         return state

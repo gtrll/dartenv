@@ -123,6 +123,3 @@ class DartSnake7LinkEnv(dart_env.DartEnv, utils.EzPickle):
     def viewer_setup(self):
         self._get_viewer().scene.tb.trans[2] = -5.5
 
-    @property
-    def state(self):
-        return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()

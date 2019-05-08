@@ -13,10 +13,6 @@ class DartReacherEnv(dart_env.DartEnv, utils.EzPickle):
         dart_env.DartEnv.__init__(self, 'reacher.skel', 4, 21, self.control_bounds, disableViewer=False)
         utils.EzPickle.__init__(self)
 
-    @property
-    def state(self):
-        return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
-
     def step(self, a):
         clamped_control = np.array(a)
         for i in range(len(clamped_control)):

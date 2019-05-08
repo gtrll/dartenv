@@ -27,10 +27,6 @@ class DartCartPoleEnv(dart_env.DartEnv, utils.EzPickle):
     def _get_obs(self):
         return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
 
-    @property
-    def state(self):
-        return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
-
     def reset_model(self):
         self.dart_world.reset()
         qpos = self.robot_skeleton.q + self.np_random.uniform(low=-.01, high=.01, size=self.robot_skeleton.ndofs)

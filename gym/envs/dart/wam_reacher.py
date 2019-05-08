@@ -20,10 +20,6 @@ class DartWAMReacherEnv(dart_env.DartEnv, utils.EzPickle):
         # self.robot_skeleton.joints[0].set_actuator_type(pydart.joint.Joint.LOCKED)  # lock the base of wam
         utils.EzPickle.__init__(self)
 
-    @property
-    def state(self):
-        return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
-
     def step(self, a):
         # print(dir(self.viewer.scene.cameras[0]))
         clamped_control = np.array(a)
