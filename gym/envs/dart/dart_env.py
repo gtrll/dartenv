@@ -145,9 +145,10 @@ class DartEnv(gym.Env):
         self.robot_skeleton.set_velocities(qvel)
 
     def set_state_vector(self, state):
+        # Return obs!
         self.robot_skeleton.set_positions(state[0:int(len(state)/2)])
         self.robot_skeleton.set_velocities(state[int(len(state)/2):])
-        return state
+        return self._get_obs()
 
     @property
     def dt(self):
