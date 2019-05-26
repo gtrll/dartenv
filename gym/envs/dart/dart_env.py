@@ -105,7 +105,7 @@ class DartEnv(gym.Env):
         else:
             raise error.Error('Unrecognized observation type: {}'.format(self._obs_type))
 
-        # self._seed()
+        self.seed()
         self.metadata = {
             'render.modes': ['human', 'rgb_array'],
             'video.frames_per_second': int(np.round(1.0 / self.dt))
