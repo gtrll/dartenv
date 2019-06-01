@@ -7,13 +7,13 @@ from version import VERSION
 
 # Environment-specific dependencies.
 extras = {
-  'atari': ['atari_py>=0.1.1', 'Pillow', 'PyOpenGL'],
-  'box2d': ['Box2D-kengz'],
-  'classic_control': ['PyOpenGL'],
-  'dart': ['pydart2'],
-  'mujoco': ['mujoco_py>=1.50', 'imageio'],
-  'robotics': ['mujoco_py>=1.50', 'imageio'],
-  'parameter_tuning': ['keras', 'theano'],
+  'atari': ['atari_py~=0.1.4', 'Pillow', 'opencv-python'],
+  # 'atari': ['atari_py>=0.1.4', 'Pillow', 'PyOpenGL'],    
+  'box2d': ['box2d-py~=2.3.5'],
+  'classic_control': [],
+  'dart': ['pydart2'],    
+  'mujoco': ['mujoco_py>=1.50, <2.1', 'imageio'],
+  'robotics': ['mujoco_py>=1.50, <2.1', 'imageio'],
 }
 
 # Meta dependency groups.
@@ -33,7 +33,7 @@ setup(name='gym',
                 if package.startswith('gym')],
       zip_safe=False,
       install_requires=[
-          'numpy>=1.10.4', 'requests>=2.0', 'six', 'pyglet>=1.2.0',
+          'scipy', 'numpy>=1.10.4', 'six', 'pyglet>=1.2.0',
       ],
       extras_require=extras,
       package_data={'gym': [
@@ -47,4 +47,13 @@ setup(name='gym',
         'envs/robotics/assets/textures/*.png']
       },
       tests_require=['pytest', 'mock'],
+      python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
+      classifiers=[
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
+      ],
 )
