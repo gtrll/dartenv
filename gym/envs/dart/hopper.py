@@ -1,6 +1,7 @@
 import numpy as np
 from gym import utils
 from gym.envs.dart import dart_env
+import pydart2 as pydart
 
 
 class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
@@ -10,7 +11,7 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
         obs_dim = 11
         # obs_dim = 13
 
-        dart_env.DartEnv.__init__(self, 'hopper_capsule.skel', 4, obs_dim, self.control_bounds, disableViewer=True)
+        dart_env.DartEnv.__init__(self, 'hopper_capsule.skel', 4, obs_dim, self.control_bounds, disableViewer=False)
 
         try:
             self.dart_world.set_collision_detector(3)
@@ -19,6 +20,21 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
             self.dart_world.set_collision_detector(2)
 
         utils.EzPickle.__init__(self)
+
+        inacc = 0.0
+        # Mass.
+        for body in self.robot_skeleton.bodynodes:
+            body.set_mass(body.m * self._rand_ratio(inacc, self.np_random))
+        # Damping coeff for revolute joints.
+        for j in self.robot_skeleton.joints:
+            if isinstance(j, pydart.joint.RevoluteJoint):
+                j.set_damping_coefficient(
+                    0, j.damping_coefficient(0) * self._rand_ratio(inacc, self.np_random))
+
+    def _rand_ratio(self, inacc, np_rand):
+        """Helper function to be used in _perturb_physcial_params."""
+        assert inacc >= 0.0 and inacc < 1.0
+        return 1.0 + inacc * (np_rand.choice(2) * 2.0 - 1.0)
 
     def advance(self, a):
         clamped_control = np.array(a)
@@ -51,11 +67,11 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
         reward -= 1e-3 * np.square(a).sum()
 
         # uncomment the line below to enable joint limit penalty, which helps learning
-        #reward -= 5e-1 * joint_limit_penalty
+        reward -= 5e-1 * joint_limit_penalty
 
         s = self.state_vector()
         done = not (np.isfinite(s).all() and (np.abs(s[2:]) < 100).all() and
-                    (height > .7) and (height < 1.8) and (abs(ang) < .2))
+                    (height > .7) and (height < 1.8) and (abs(ang) < .4))
         ob = self._get_obs()
 
         return ob, reward, done, {}
