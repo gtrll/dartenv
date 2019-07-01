@@ -4,9 +4,10 @@ import numpy as np
 from gym import utils
 from gym.envs.dart import dart_env
 
+
 class DartCartPoleSwingUpEnv(dart_env.DartEnv, utils.EzPickle):
     def __init__(self):
-        self.control_bounds = np.array([[1.0],[-1.0]])
+        self.control_bounds = np.array([[1.0], [-1.0]])
         self.action_scale = 40
         dart_env.DartEnv.__init__(self, 'cartpole_swingup.skel', 2, 4, self.control_bounds, dt=0.01, disableViewer=True)
         utils.EzPickle.__init__(self)
@@ -18,19 +19,18 @@ class DartCartPoleSwingUpEnv(dart_env.DartEnv, utils.EzPickle):
         self.do_simulation(tau, self.frame_skip)
         ob = self._get_obs()
 
+        alive_bonus = 5.0
         ang = self.robot_skeleton.q[1]
-
-        alive_bonus = 6.0
-        ang_cost = 1.0*np.abs(ang)
-        quad_ctrl_cost = 0.01 * np.square(a).sum()
-        com_cost = 0.01 * np.abs(self.robot_skeleton.q[0])
-
+        # original 1.0 x ..., just to make the rewards positive, most of the time!
+        ang_cost = 0.3 * np.abs(ang)
+        quad_ctrl_cost = 0.005 * np.square(a).sum()
+        com_cost = 0.005 * np.abs(self.robot_skeleton.q[0])
         reward = alive_bonus - ang_cost - quad_ctrl_cost - com_cost
 
-        done = abs(ang) > 8 * np.pi or abs(self.robot_skeleton.dq[1]) > 25 or abs(self.robot_skeleton.q[0]) > 5
+        # 8 * np.pi..., dq[1] > 25...
+        done = abs(ang) > 4 * np.pi or abs(self.robot_skeleton.dq[1]) > 15 or abs(self.robot_skeleton.q[0]) > 5
 
         return ob, reward, bool(done), {}
-
 
     def _get_obs(self):
         return np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq]).ravel()
@@ -46,7 +46,6 @@ class DartCartPoleSwingUpEnv(dart_env.DartEnv, utils.EzPickle):
 
         self.set_state(qpos, qvel)
         return self._get_obs()
-
 
     def viewer_setup(self):
         self._get_viewer().scene.tb.trans[2] = -3.5

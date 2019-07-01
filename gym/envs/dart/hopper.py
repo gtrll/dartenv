@@ -5,13 +5,13 @@ import pydart2 as pydart
 
 
 class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
-    def __init__(self):
+    def __init__(self, disable_viewer=True, inacc=0.0):
         self.control_bounds = np.array([[1.0, 1.0, 1.0], [-1.0, -1.0, -1.0]])
         self.action_scale = 200
         obs_dim = 11
-        # obs_dim = 13
 
-        dart_env.DartEnv.__init__(self, 'hopper_capsule.skel', 4, obs_dim, self.control_bounds, disableViewer=False)
+        dart_env.DartEnv.__init__(self, 'hopper_capsule.skel', 4, obs_dim,
+                                  self.control_bounds, disableViewer=disable_viewer, inacc=inacc)
 
         try:
             self.dart_world.set_collision_detector(3)
@@ -20,21 +20,6 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
             self.dart_world.set_collision_detector(2)
 
         utils.EzPickle.__init__(self)
-
-        inacc = 0.0
-        # Mass.
-        for body in self.robot_skeleton.bodynodes:
-            body.set_mass(body.m * self._rand_ratio(inacc, self.np_random))
-        # Damping coeff for revolute joints.
-        for j in self.robot_skeleton.joints:
-            if isinstance(j, pydart.joint.RevoluteJoint):
-                j.set_damping_coefficient(
-                    0, j.damping_coefficient(0) * self._rand_ratio(inacc, self.np_random))
-
-    def _rand_ratio(self, inacc, np_rand):
-        """Helper function to be used in _perturb_physcial_params."""
-        assert inacc >= 0.0 and inacc < 1.0
-        return 1.0 + inacc * (np_rand.choice(2) * 2.0 - 1.0)
 
     def advance(self, a):
         clamped_control = np.array(a)

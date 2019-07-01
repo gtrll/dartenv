@@ -26,8 +26,10 @@ class DartEnv(gym.Env):
     """
 
     def __init__(self, model_paths, frame_skip, observation_size, action_bounds,
-                 dt=0.002, obs_type="parameter", action_type="continuous", visualize=True, disableViewer=False,
-                 screen_width=80, screen_height=45):
+                 dt=0.002, obs_type="parameter", action_type="continuous", visualize=True,
+                 disableViewer=False,
+                 screen_width=80, screen_height=45,
+                 inacc=0.0):
         assert obs_type in ('parameter', 'image')
         assert action_type in ("continuous", "discrete")
         print('pydart initialization OK')
@@ -110,6 +112,24 @@ class DartEnv(gym.Env):
             'render.modes': ['human', 'rgb_array'],
             'video.frames_per_second': int(np.round(1.0 / self.dt))
         }
+        self._perturb_physcial_params(inacc)
+
+    def _perturb_physcial_params(self, inacc):
+        if inacc is None:
+            return
+        # Mass.
+        for body in self.robot_skeleton.bodynodes:
+            body.set_mass(body.m * self._rand_ratio(inacc, self.np_random))
+        # Damping coeff for revolute joints.
+        for j in self.robot_skeleton.joints:
+            if isinstance(j, pydart.joint.RevoluteJoint):
+                j.set_damping_coefficient(
+                    0, j.damping_coefficient(0) * self._rand_ratio(inacc, self.np_random))
+
+    def _rand_ratio(self, inacc, np_rand):
+        """Helper function to be used in _perturb_physcial_params."""
+        assert inacc >= 0.0 and inacc < 1.0
+        return 1.0 + inacc * (np_rand.choice(2) * 2.0 - 1.0)
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)

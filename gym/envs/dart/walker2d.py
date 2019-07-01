@@ -2,14 +2,17 @@ import numpy as np
 from gym import utils
 from gym.envs.dart import dart_env
 
+import pydart2 as pydart
+
 
 class DartWalker2dEnv(dart_env.DartEnv, utils.EzPickle):
-    def __init__(self):
-        self.control_bounds = np.array([[1.0]*6,[-1.0]*6])
+    def __init__(self, disable_viewer=True, inacc=0.0):
+        self.control_bounds = np.array([[1.0]*6, [-1.0]*6])
         self.action_scale = np.array([100, 100, 20, 100, 100, 20])
         obs_dim = 17
 
-        dart_env.DartEnv.__init__(self, 'walker2d.skel', 4, obs_dim, self.control_bounds, disableViewer=True)
+        dart_env.DartEnv.__init__(self, 'walker2d.skel', 4, obs_dim,
+                                  self.control_bounds, disableViewer=disable_viewer, inacc=inacc)
 
         try:
             self.dart_world.set_collision_detector(3)
@@ -32,7 +35,7 @@ class DartWalker2dEnv(dart_env.DartEnv, utils.EzPickle):
         tau[3:] = clamped_control * self.action_scale
         posbefore = self.robot_skeleton.q[0]
         self.do_simulation(tau, self.frame_skip)
-        posafter,ang = self.robot_skeleton.q[0,2]
+        posafter, ang = self.robot_skeleton.q[0, 2]
         height = self.robot_skeleton.bodynodes[2].com()[1]
 
         contacts = self.dart_world.collision_result.contacts
@@ -65,9 +68,9 @@ class DartWalker2dEnv(dart_env.DartEnv, utils.EzPickle):
         return ob, reward, done, {}
 
     def _get_obs(self):
-        state =  np.concatenate([
+        state = np.concatenate([
             self.robot_skeleton.q[1:],
-            np.clip(self.robot_skeleton.dq,-10,10)
+            np.clip(self.robot_skeleton.dq, -10, 10)
         ])
         state[0] = self.robot_skeleton.bodynodes[2].com()[1]
 
