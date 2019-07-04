@@ -2,6 +2,7 @@ import numpy as np
 from gym import utils
 from gym.envs.dart import dart_env
 import pydart2 as pydart
+from numpy import linalg as la
 
 
 class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
@@ -34,7 +35,8 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
         self.do_simulation(tau, self.frame_skip)
 
     def step(self, a):
-        posbefore = self.robot_skeleton.q[0]
+        # posbefore = self.robot_skeleton.q[0]
+        xvel = self.robot_skeleton.dq[0]
         self.advance(a)
         posafter, ang = self.robot_skeleton.q[0, 2]
         height = self.robot_skeleton.bodynodes[2].com()[1]
@@ -47,7 +49,8 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
                 joint_limit_penalty += abs(1.5)
 
         alive_bonus = 1.0
-        reward = (posafter - posbefore) / self.dt
+        # reward = (posafter - posbefore) / self.dt
+        reward = xvel
         reward += alive_bonus
         reward -= 1e-3 * np.square(a).sum()
 

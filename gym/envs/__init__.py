@@ -220,7 +220,7 @@ register(
 register(
     id='DartCartPole-v1',
     entry_point='gym.envs.dart:DartCartPoleEnv',
-    reward_threshold=950.0,
+    reward_threshold=9500.0,
     max_episode_steps=1000,
 )
 
