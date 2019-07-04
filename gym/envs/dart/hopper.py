@@ -37,16 +37,16 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
     def step(self, a):
         # posbefore = self.robot_skeleton.q[0]
         xvel = self.robot_skeleton.dq[0]
-        self.advance(a)
-        posafter, ang = self.robot_skeleton.q[0, 2]
-        height = self.robot_skeleton.bodynodes[2].com()[1]
-
         joint_limit_penalty = 0
         for j in [-2]:
             if (self.robot_skeleton.q_lower[j] - self.robot_skeleton.q[j]) > -0.05:
                 joint_limit_penalty += abs(1.5)
             if (self.robot_skeleton.q_upper[j] - self.robot_skeleton.q[j]) < 0.05:
                 joint_limit_penalty += abs(1.5)
+
+        self.advance(a)
+        posafter, ang = self.robot_skeleton.q[0, 2]
+        height = self.robot_skeleton.bodynodes[2].com()[1]
 
         alive_bonus = 1.0
         # reward = (posafter - posbefore) / self.dt
