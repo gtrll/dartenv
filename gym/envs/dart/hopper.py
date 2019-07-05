@@ -66,7 +66,11 @@ class DartHopperEnv(dart_env.DartEnv, utils.EzPickle):
 
     def _get_obs(self):
         state = np.concatenate([self.robot_skeleton.q[1:], np.clip(self.robot_skeleton.dq, -10, 10)])
-        state[0] = self.robot_skeleton.bodynodes[2].com()[1]
+        # Remove clipping.
+
+        state = np.concatenate([self.robot_skeleton.q, self.robot_skeleton.dq])
+        state = np.append(state, self.robot_skeleton.bodynodes[2].com()[1])
+
         return state
 
     def reset_model(self):
