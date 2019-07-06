@@ -6,11 +6,13 @@ from gym.envs.dart import dart_env
 
 
 class DartReacherEnv(dart_env.DartEnv, utils.EzPickle):
-    def __init__(self):
+    def __init__(self, disable_viewer=True, inacc=0.0):
         self.target = np.array([0.8, -0.6, 0.6])
         self.action_scale = np.array([10, 10, 10, 10, 10])
         self.control_bounds = np.array([[1.0, 1.0, 1.0, 1.0, 1.0], [-1.0, -1.0, -1.0, -1.0, -1.0]])
-        dart_env.DartEnv.__init__(self, 'reacher.skel', 4, 21, self.control_bounds, disableViewer=False)
+        
+        dart_env.DartEnv.__init__(self, 'reacher.skel', 4, 21, self.control_bounds,
+                                  disableViewer=disable_viewer, inacc=inacc)
         utils.EzPickle.__init__(self)
 
     def step(self, a):
@@ -24,7 +26,7 @@ class DartReacherEnv(dart_env.DartEnv, utils.EzPickle):
 
         fingertip = np.array([0.0, -0.25, 0.0])
         vec = self.robot_skeleton.bodynodes[2].to_world(fingertip) - self.target
-        reward_dist = - np.linalg.norm(vec)
+        reward_dist = 2.0 - np.linalg.norm(vec)
         reward_ctrl = - np.square(tau).sum() * 0.001
         alive_bonus = 0
         reward = reward_dist + reward_ctrl + alive_bonus
@@ -33,8 +35,9 @@ class DartReacherEnv(dart_env.DartEnv, utils.EzPickle):
         ob = self._get_obs()
 
         s = self.state_vector()
-
-        done = not (np.isfinite(s).all() and (-reward_dist > 0.1))
+        vec = self.robot_skeleton.bodynodes[2].to_world(fingertip) - self.target
+        dist = np.linalg.norm(vec)
+        done = not (np.isfinite(s).all() and (dist > 0.1))
 
         return ob, reward, done, {}
 
