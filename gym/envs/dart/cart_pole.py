@@ -6,14 +6,23 @@ from gym.envs.dart import dart_env
 class DartCartPoleEnv(dart_env.DartEnv, utils.EzPickle):
     def __init__(self):
         control_bounds = np.array([[1.0], [-1.0]])
-        self.action_scale = 100
+        self.control_bounds = control_bounds
+        self.action_scale = np.array([100.0])
         self.st_dim = 4
         dart_env.DartEnv.__init__(self, 'cartpole.skel', 2, 4, control_bounds, dt=0.02, disableViewer=True)
         utils.EzPickle.__init__(self)
 
     def step(self, a):
         reward = 1.0
+        a = np.array(a)
 
+        # Clip first.
+        for i in range(len(a)):
+            if a[i] > self.control_bounds[0][i]:
+                a[i] = self.control_bounds[0][i]
+            if a[i] < self.control_bounds[1][i]:
+                a[i] = self.control_bounds[1][i]
+                
         tau = np.zeros(self.robot_skeleton.ndofs)
         tau[0] = a[0] * self.action_scale
 
