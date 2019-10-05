@@ -1,7 +1,7 @@
 # Contributors: Wenhao Yu (wyu68@gatech.edu) and Dong Xu (donghsu@gatech.edu)
 
 import os
-
+import pdb
 from gym import error, spaces
 from gym.utils import seeding
 import numpy as np
@@ -112,10 +112,11 @@ class DartEnv(gym.Env):
             'render.modes': ['human', 'rgb_array'],
             'video.frames_per_second': int(np.round(1.0 / self.dt))
         }
+        
         self._perturb_physcial_params(inacc)
 
     def _perturb_physcial_params(self, inacc):
-        if inacc is None:
+        if inacc is None or np.isclose(inacc, 0.0):
             return
         # Mass.
         for body in self.robot_skeleton.bodynodes:

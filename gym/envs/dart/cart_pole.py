@@ -4,12 +4,13 @@ from gym.envs.dart import dart_env
 
 
 class DartCartPoleEnv(dart_env.DartEnv, utils.EzPickle):
-    def __init__(self):
+    def __init__(self, disable_viewer=True, inacc=0.0):
         control_bounds = np.array([[1.0], [-1.0]])
         self.control_bounds = control_bounds
         self.action_scale = np.array([100.0])
         self.st_dim = 4
-        dart_env.DartEnv.__init__(self, 'cartpole.skel', 2, 4, control_bounds, dt=0.02, disableViewer=True)
+        dart_env.DartEnv.__init__(self, 'cartpole.skel', 2, 4, control_bounds, dt=0.02,
+                                  disableViewer=disable_viewer, inacc=inacc)
         utils.EzPickle.__init__(self)
 
     def step(self, a):
