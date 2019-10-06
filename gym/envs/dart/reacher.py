@@ -24,9 +24,24 @@ class DartReacherEnv(dart_env.DartEnv, utils.EzPickle):
                 clamped_control[i] = self.control_bounds[1][i]
         tau = np.multiply(clamped_control, self.action_scale)
 
+        # fingertip = np.array([0.0, -0.25, 0.0])
+        # vec = self.robot_skeleton.bodynodes[2].to_world(fingertip) - self.target
+        # reward_dist = 2.0 - np.linalg.norm(vec)
+        # reward_ctrl = - np.square(tau).sum() * 0.001
+        # alive_bonus = 0
+        # reward = reward_dist + reward_ctrl + alive_bonus
+
+        # self.do_simulation(tau, self.frame_skip)
+        # ob = self._get_obs()
+
+        # s = self.state_vector()
+        # vec = self.robot_skeleton.bodynodes[2].to_world(fingertip) - self.target
+        # dist = np.linalg.norm(vec)
+        # done = not (np.isfinite(s).all() and (dist > 0.1))
+
         fingertip = np.array([0.0, -0.25, 0.0])
         vec = self.robot_skeleton.bodynodes[2].to_world(fingertip) - self.target
-        reward_dist = 2.0 - np.linalg.norm(vec)
+        reward_dist = - np.linalg.norm(vec)
         reward_ctrl = - np.square(tau).sum() * 0.001
         alive_bonus = 0
         reward = reward_dist + reward_ctrl + alive_bonus
@@ -35,10 +50,8 @@ class DartReacherEnv(dart_env.DartEnv, utils.EzPickle):
         ob = self._get_obs()
 
         s = self.state_vector()
-        vec = self.robot_skeleton.bodynodes[2].to_world(fingertip) - self.target
-        dist = np.linalg.norm(vec)
-        done = not (np.isfinite(s).all() and (dist > 0.1))
-
+        done = not (np.isfinite(s).all() and (-reward_dist > 0.1))
+        
         return ob, reward, done, {}
 
     def _get_obs(self):
