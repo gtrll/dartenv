@@ -10,7 +10,7 @@ class DartDoubleInvertedPendulumEnv(dart_env.DartEnv, utils.EzPickle):
         control_bounds = np.array([[1.0],[-1.0]])
         self.action_scale = 40
         dart_env.DartEnv.__init__(
-            self, 'inverted_double_pendulum.skel', 2, 8, control_bounds, dt=0.01)
+            self, 'inverted_double_pendulum.skel', 2, 8, control_bounds, dt=0.01, disableViewer=True)
         utils.EzPickle.__init__(self)
 
         self.init_qpos = np.array(self.robot_skeleton.q).copy()
